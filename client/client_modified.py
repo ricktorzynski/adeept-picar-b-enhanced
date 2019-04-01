@@ -180,8 +180,6 @@ def call_SR3():                     #Start speech recognition mode
         tcpClicSock.send(('voice_3').encode())
     else:
         tcpClicSock.send(('Stop').encode())
-def call_BYC():
-    tcpClicSock.send(('byYourCommand').encode())
 
 def call_opencv():                  #Start OpenCV mode
     if opencv_status == 0:
@@ -306,9 +304,6 @@ def loop():                       #GUI
 
         BtnFL = tk.Button(root, width=15, text='Find Line',fg=color_text,bg=color_btn,relief='ridge')
         BtnFL.place(x=165,y=420)
-
-        BtnBYC = tk.Button(root, width=15, text='By Your Command',fg=color_text,bg=color_btn,relief='ridge',command=call_BYC)
-        BtnBYC.place(x=165,y=495)
 
         BtnSR3 = tk.Button(root, width=15, text='Sphinx SR',fg=color_text,bg=color_btn,relief='ridge',command=call_SR3)
         BtnSR3.place(x=300,y=495)
@@ -633,8 +628,12 @@ def loop():                       #GUI
         l_VIN.place(x=30,y=465)      
 
         #Define buttons and put these in position
-        Btn0 = tk.Button(root, width=8, text='Forward',fg=color_text,bg=color_btn,relief='ridge')
-        Btn1 = tk.Button(root, width=8, text='Backward',fg=color_text,bg=color_btn,relief='ridge')
+        # Btn0 = tk.Button(root, width=8, text='Forward',fg=color_text,bg=color_btn,relief='ridge')
+        # Btn1 = tk.Button(root, width=8, text='Backward',fg=color_text,bg=color_btn,relief='ridge')
+        Btn1 = tk.Button(root, width=8, text='Forward',fg=color_text,bg=color_btn,relief='ridge')
+        Btn0 = tk.Button(root, width=8, text='Backward',fg=color_text,bg=color_btn,relief='ridge')
+        
+        
         Btn2 = tk.Button(root, width=8, text='Left',fg=color_text,bg=color_btn,relief='ridge')
         Btn3 = tk.Button(root, width=8, text='Right',fg=color_text,bg=color_btn,relief='ridge')
         Btn4 = tk.Button(root, width=8, text='Stop',fg=color_text,bg=color_btn,relief='ridge')
@@ -650,8 +649,8 @@ def loop():                       #GUI
         Btn12 = tk.Button(root, width=8, text='Set',command=spd_set,fg=color_text,bg=color_btn,relief='ridge')
         Btn13 = tk.Button(root, width=8,height=3, text='Scan',fg=color_text,bg=color_btn,relief='ridge')
 
-        Btn0.place(x=100,y=195)
-        Btn1.place(x=100,y=230)
+        Btn0.place(x=100,y=230)
+        Btn1.place(x=100,y=190)
         Btn2.place(x=30,y=230)
         Btn3.place(x=170,y=230)
         Btn4.place(x=170,y=275)
@@ -669,8 +668,10 @@ def loop():                       #GUI
 
 
         # Bind the buttons with the corresponding callback function
-        Btn0.bind('<ButtonPress-1>', call_forward)
+        # Btn0.bind('<ButtonPress-1>', call_forward)
+        # Btn1.bind('<ButtonPress-1>', call_back)
         Btn1.bind('<ButtonPress-1>', call_back)
+        Btn0.bind('<ButtonPress-1>', call_forward)
         Btn2.bind('<ButtonPress-1>', click_call_Left)
         Btn3.bind('<ButtonPress-1>', click_call_Right)
         Btn4.bind('<ButtonPress-1>', call_Stop)

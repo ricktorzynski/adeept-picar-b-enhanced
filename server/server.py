@@ -30,6 +30,9 @@ import zmq
 import base64
 import os
 import subprocess
+import pygame.mixer
+from time import sleep
+from os import path
 
 #time.sleep(4)
 
@@ -111,6 +114,9 @@ turn_speed     = num_import_int('look_turn_speed:')
 vtr_mid_orig = vtr_mid
 hoz_mid_orig = hoz_mid
 ip_con     = ''
+
+sound_path = '/home/pi/Adeept_PiCar-B/server/sounds'
+
 
 def get_ram():
     try:
@@ -401,6 +407,15 @@ def dis_scan_thread():       #Get Ultrasonic scan distance
 def ap_thread():             #Set up an AP-Hotspot
     os.system("sudo create_ap wlan0 eth0 AdeeptCar 12345678")
 
+
+def play_sound(wavfile):
+    pygame.mixer.init(48000, -16,1, 1024)
+    sound_file_path = path.join(sound_path,wavfile)
+    sound = pygame.mixer.Sound(sound_file_path)
+    ChannelA = pygame.mixer.Channel(1)
+    ChannelA.play(sound)
+
+
 wifi_status = 0
 
 def run():                   #Main loop
@@ -498,6 +513,7 @@ def run():                   #Main loop
             str_list_1=dis_can                 #Divide the list to make it samller to send 
             str_index=' '                      #Separate the values by space
             str_send_1=str_index.join(str_list_1)+' '
+            play_sound("sonar.wav")
             tcpCliSock.sendall((str(str_send_1)).encode())   #Send Data
             tcpCliSock.send('finished'.encode())        #Sending 'finished' tell the client to stop receiving the list of dis_can
 
@@ -506,6 +522,7 @@ def run():                   #Main loop
             str_list_1=dis_can                 #Divide the list to make it samller to send 
             str_index=' '                      #Separate the values by space
             str_send_1=str_index.join(str_list_1)+' '
+            play_sound("sona.wav")
             tcpCliSock.sendall((str(str_send_1)).encode())   #Send Data
             tcpCliSock.send('finished'.encode())        #Sending 'finished' tell the client to stop receiving the list of dis_can
 
@@ -551,12 +568,19 @@ def run():                   #Main loop
         elif 'lightsON' in data:               #Turn on the LEDs
             led.both_on()
             led_status=1
+            play_sound("lightsaber_on.wav")
             tcpCliSock.send('lightsON'.encode())
+
 
         elif 'lightsOFF'in data:               #Turn off the LEDs
             led.both_off()
             led_status=0
+            play_sound("lightsaber_on.wav")
             tcpCliSock.send('lightsOFF'.encode())
+
+        elif 'byYourCommand' in data:
+            play_sound("by_your_command.wav")
+
 
         elif 'middle' in data:                 #Go straight
             if led_status == 0:
