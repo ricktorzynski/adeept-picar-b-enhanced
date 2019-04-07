@@ -180,8 +180,11 @@ def call_SR3():                     #Start speech recognition mode
         tcpClicSock.send(('voice_3').encode())
     else:
         tcpClicSock.send(('Stop').encode())
-def call_BYC():
-    tcpClicSock.send(('byYourCommand').encode())
+def call_play_on():
+    tcpClicSock.send(('playON').encode())
+
+def call_play_off():
+    tcpClicSock.send(('playOFF').encode())
 
 def call_opencv():                  #Start OpenCV mode
     if opencv_status == 0:
@@ -233,6 +236,10 @@ def voice_command_thread():
                     tcpClicSock.send(('lightsON').encode())
                 elif 'lights off' in v_command:
                     tcpClicSock.send(('lightsOFF').encode())
+                elif 'play on' in v_command:
+                    tcpClicSock.send(('playON').encode())
+                elif 'play on' in v_command:
+                    tcpClicSock.send(('playOFF').encode())
                 else:
                     pass
             else:
@@ -307,8 +314,10 @@ def loop():                       #GUI
         BtnFL = tk.Button(root, width=15, text='Find Line',fg=color_text,bg=color_btn,relief='ridge')
         BtnFL.place(x=165,y=420)
 
-        BtnBYC = tk.Button(root, width=15, text='By Your Command',fg=color_text,bg=color_btn,relief='ridge',command=call_BYC)
+        BtnBYC = tk.Button(root, width=15, text='Play Song',fg=color_text,bg=color_btn,relief='ridge',command=call_play_on)
         BtnBYC.place(x=165,y=495)
+        BtnBYC = tk.Button(root, width=15, text='Stop Song',fg=color_text,bg=color_btn,relief='ridge',command=call_play_off)
+        BtnBYC.place(x=165,y=550)
 
         BtnSR3 = tk.Button(root, width=15, text='Sphinx SR',fg=color_text,bg=color_btn,relief='ridge',command=call_SR3)
         BtnSR3.place(x=300,y=495)
