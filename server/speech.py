@@ -98,35 +98,44 @@ def run():
     #print('pre')
 
     if 'forward' in v_command:
-        motor.motor_left(status, forward,left_spd*spd_ad_2)
-        motor.motor_right(status,backward,right_spd*spd_ad_2)
-        time.sleep(2)
+        # motor.motor_left(status, forward,left_spd*spd_ad_2)
+        # motor.motor_right(status,forward,right_spd*spd_ad_2)
+        print("motor forward")
+        time.sleep(.25)
+        print("motorStop")
         motor.motorStop()
 
     elif 'backward' in v_command:
-        motor.motor_left(status, backward,left_spd)
-        motor.motor_right(status,forward,right_spd)
-        time.sleep(2)
+        # motor.motor_left(status, backward,left_spd)
+        # motor.motor_right(status,backward,right_spd)
+        print("motor backward")
+        time.sleep(.25)
+        print("motorStop")
         motor.motorStop()
 
     elif 'left' in v_command:
         turn.left()
-        motor.motor_left(status, forward,left_spd*spd_ad_2)
-        motor.motor_right(status,backward,right_spd*spd_ad_2)
-        time.sleep(2)
+        # motor.motor_left(status, forward,left_spd*spd_ad_2)
+        # motor.motor_right(status,backward,right_spd*spd_ad_2)
+        print("motor left")
+        time.sleep(.25)
+        print("motorStop")
         motor.motorStop()
 
     elif "right" in v_command:
         turn.right()
-        motor.motor_left(status, forward,left_spd*spd_ad_2)
-        motor.motor_right(status,backward,right_spd*spd_ad_2)
-        time.sleep(2)
+        # motor.motor_left(status, forward,left_spd*spd_ad_2)
+        # motor.motor_right(status,backward,right_spd*spd_ad_2)
+        print("motor right")
+        time.sleep(.25)
+        print("motorStop")
         motor.motorStop()
 
     elif 'stop' in v_command:
         motor.motorStop()
 
     else:
+        print("pass")
         pass
 
 
