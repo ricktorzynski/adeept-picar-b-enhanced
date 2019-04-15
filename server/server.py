@@ -115,7 +115,21 @@ vtr_mid_orig = vtr_mid
 hoz_mid_orig = hoz_mid
 ip_con     = ''
 
+# path for the sound files
 sound_path = '/home/pi/Adeept_PiCar-B/server/sounds'
+
+# play sound on
+sound_file_on = "knight_rider.wav"
+
+# play sound off
+sound_file_off = "by_your_command.wav"
+
+# scan sound
+scan_sound_file = "sonar.wav"
+
+# sound volume
+sound_volume = 0.40
+
 
 
 def get_ram():
@@ -243,7 +257,6 @@ def opencv_thread():         #OpenCV and FPV video
         cv2.line(image,(300,240),(340,240),(128,255,128),1)
         cv2.line(image,(320,220),(320,260),(128,255,128),1)
 
-
         if opencv_mode == 1:
             hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
             mask = cv2.inRange(hsv, colorLower, colorUpper)
@@ -290,23 +303,25 @@ def opencv_thread():         #OpenCV and FPV video
                     v_mu_t = 390+(hoz_mid+hoz_mid_orig)
                     turn.turn_ang(mu_t)
 
+                    # Turning off motor for car - causes crashing
                     dis = dis_data
                     if dis < (distance_stay-0.1) :
                         led.both_off()
                         led.red()
                         turn.turn_ang(mu_t)
-                        motor.motor_left(status, backward,left_spd*spd_ad_u)
-                        motor.motor_right(status,forward,right_spd*spd_ad_u)
+                        # motor.motor_left(status, backward,left_spd*spd_ad_u)
+                        # motor.motor_right(status,forward,right_spd*spd_ad_u)
                         cv2.putText(image,'Too Close',(40,80), font, 0.5,(128,128,255),1,cv2.LINE_AA)
                     elif dis > (distance_stay+0.1):
-                        motor.motor_left(status, forward,left_spd*spd_ad_2)
-                        motor.motor_right(status,backward,right_spd*spd_ad_2)
+                        # motor.motor_left(status, forward,left_spd*spd_ad_2)
+                        # motor.motor_right(status,backward,right_spd*spd_ad_2)
                         cv2.putText(image,'OpenCV Tracking',(40,80), font, 0.5,(128,255,128),1,cv2.LINE_AA)
                     else:
                         motor.motorStop()
                         led.both_off()
                         led.blue()  
                         cv2.putText(image,'In Position',(40,80), font, 0.5,(255,128,128),1,cv2.LINE_AA)
+                    
 
                     if dis < 8:
                         cv2.putText(image,'%s m'%str(round(dis,2)),(40,40), font, 0.5,(255,255,255),1,cv2.LINE_AA)
@@ -408,12 +423,22 @@ def ap_thread():             #Set up an AP-Hotspot
     os.system("sudo create_ap wlan0 eth0 AdeeptCar 12345678")
 
 
-def play_sound(wavfile):
-    pygame.mixer.init(48000, -16,1, 1024)
-    sound_file_path = path.join(sound_path,wavfile)
-    sound = pygame.mixer.Sound(sound_file_path)
-    ChannelA = pygame.mixer.Channel(1)
-    ChannelA.play(sound)
+def play_sound_on(wavfile,sound_status,volume):
+    if sound_status == 1:
+        pygame.mixer.init(48000, -16,1, 1024)
+        sound_file_path = path.join(sound_path,wavfile)
+        sound = pygame.mixer.Sound(sound_file_path)
+        sound.set_volume(volume)
+        ChannelA = pygame.mixer.Channel(1)
+        ChannelA.play(sound)
+    else:
+        pygame.mixer.init(48000, -16,1, 1024)
+        sound_file_path = path.join(sound_path,wavfile)
+        sound = pygame.mixer.Sound(sound_file_path)
+        sound.set_volume(volume)
+        ChannelA = pygame.mixer.Channel(1)
+        ChannelA.play(sound)
+
 
 
 wifi_status = 0
@@ -469,7 +494,7 @@ def run():                   #Main loop
     context = zmq.Context()
     footage_socket = context.socket(zmq.PUB)
     footage_socket.connect('tcp://%s:5555'%addr[0])
-    print(addr[0])
+    print("socket addr[0]: ",addr[0])
     #Threads start
     video_threading=threading.Thread(target=opencv_thread)      #Define a thread for FPV and OpenCV
     video_threading.setDaemon(True)                             #'True' means it is a front thread,it would close when the mainloop() closes
@@ -513,7 +538,7 @@ def run():                   #Main loop
             str_list_1=dis_can                 #Divide the list to make it samller to send 
             str_index=' '                      #Separate the values by space
             str_send_1=str_index.join(str_list_1)+' '
-            play_sound("sonar.wav")
+            play_sound_on(scan_sound_file,1,sound_volume)
             tcpCliSock.sendall((str(str_send_1)).encode())   #Send Data
             tcpCliSock.send('finished'.encode())        #Sending 'finished' tell the client to stop receiving the list of dis_can
 
@@ -522,7 +547,7 @@ def run():                   #Main loop
             str_list_1=dis_can                 #Divide the list to make it samller to send 
             str_index=' '                      #Separate the values by space
             str_send_1=str_index.join(str_list_1)+' '
-            play_sound("sona.wav")
+            play_sound_on(scan_sound_file,1,sound_volume)
             tcpCliSock.sendall((str(str_send_1)).encode())   #Send Data
             tcpCliSock.send('finished'.encode())        #Sending 'finished' tell the client to stop receiving the list of dis_can
 
@@ -568,18 +593,21 @@ def run():                   #Main loop
         elif 'lightsON' in data:               #Turn on the LEDs
             led.both_on()
             led_status=1
-            play_sound("lightsaber_on.wav")
+            play_sound_on("lightsaber_on.wav",1,sound_volume)
             tcpCliSock.send('lightsON'.encode())
 
 
         elif 'lightsOFF'in data:               #Turn off the LEDs
             led.both_off()
             led_status=0
-            play_sound("lightsaber_on.wav")
+            play_sound_on("lightsaber_on.wav",1,sound_volume)
             tcpCliSock.send('lightsOFF'.encode())
 
-        elif 'byYourCommand' in data:
-            play_sound("by_your_command.wav")
+        elif 'playON' in data:
+            play_sound_on(sound_file_on,1,sound_volume)
+
+        elif 'playOFF' in data:
+            play_sound_on(sound_file_off,0,sound_volume)
 
 
         elif 'middle' in data:                 #Go straight

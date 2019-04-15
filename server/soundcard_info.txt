@@ -1,0 +1,7 @@
+pi@spypi:~/Adeept_PiCar-B/server $ cat /proc/asound/cards
+ 0 [ALSA           ]: bcm2835_alsa - bcm2835 ALSA
+                      bcm2835 ALSA
+ 1 [Device         ]: USB-Audio - USB PnP Sound Device
+                      C-Media Electronics Inc. USB PnP Sound Device at usb-3f980000.usb-1.1.2, full s
+
+
