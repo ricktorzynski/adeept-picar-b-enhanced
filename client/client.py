@@ -216,18 +216,18 @@ def voice_command_thread():
             l_VIN.config(text='Command?')
             v_command=voice_input()
             if SR_mode == 1:
+                """
                 l_VIN.config(text='%s'%v_command)
                 if 'forward' in v_command:
                     tcpClicSock.send(('forward').encode())
-                elif 'backward' in v_command:
+                elif 'backward' in v_command:.
                     tcpClicSock.send(('backward').encode())
                 elif 'left' in v_command:
-                    tcpClicSock.send(('Left').encode())
+                    tcpClicSock.send(('left').encode())
                 elif 'right' in v_command:
-                    tcpClicSock.send(('Right').encode())
+                    tcpClicSock.send(('right').encode())
                 elif 'stop' in v_command:
                     tcpClicSock.send(('stop').encode())
-                    tcpClicSock.send(('Stop').encode())
                 elif 'find line' in v_command:
                     tcpClicSock.send(('findline').encode())
                 elif 'follow' in v_command:
@@ -242,6 +242,8 @@ def voice_command_thread():
                     tcpClicSock.send(('playOFF').encode())
                 else:
                     pass
+                """
+                pass
             else:
                 pass
         else:
@@ -636,10 +638,10 @@ def loop():                       #GUI
         Btn14.place(x=300,y=35)                          #Define a Button and put it in position
 
         BtnVIN = tk.Button(root, width=15, text='Voice Input',fg=color_text,bg=color_btn,relief='ridge')
-        BtnVIN.place(x=30,y=495)
+        # BtnVIN.place(x=30,y=495)
 
         l_VIN=tk.Label(root,width=16,text='Voice commands',fg=color_text,bg=color_btn)
-        l_VIN.place(x=30,y=465)      
+        # l_VIN.place(x=30,y=465)      
 
         #Define buttons and put these in position
         Btn0 = tk.Button(root, width=8, text='Forward',fg=color_text,bg=color_btn,relief='ridge')
